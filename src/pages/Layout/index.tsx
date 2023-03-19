@@ -1,11 +1,8 @@
-import { useModel } from '@umijs/max';
-import React, { useState } from 'react';
-import { AppstoreOutlined, MailOutlined, SettingOutlined } from '@ant-design/icons';
+import { Outlet, history, useLocation } from '@umijs/max';
+import React, { useState, useEffect } from 'react';
+import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
-import Home from '../Home';
-import News from '../News';
-import Product from '../Product';
 import styles from './index.less'
 
 const items: MenuProps['items'] = [
@@ -24,24 +21,31 @@ const items: MenuProps['items'] = [
     key: 'product',
     icon: <MailOutlined />,
   },
-  {
-    label: '后台系统',
-    key: 'admin',
-    icon: <MailOutlined />,
-  },
 ];
-const HomePage: React.FC = (props) => {
-  console.log(props, 'props');
 
-  const [current, setCurrent] = useState('news');
+const HomePage: React.FC = (props) => {
+  const location = useLocation();
+  const [current, setCurrent] = useState('home');
+  useEffect(() => {
+    if (location.pathname.includes('home')) {
+      setCurrent('home')
+    } else if (location.pathname.includes('news')) {
+      setCurrent('news')
+    } else if (location.pathname.includes('product')) {
+      setCurrent('product')
+    }
+  }, [])
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
     setCurrent(e.key);
-    if (e.key === 'admin') {
-      window.location.href = "http://localhost:7002"
+    if (e.key === 'home') {
+      history.push('/home')
+    } else if (e.key === 'news') {
+      history.push('/news')
+    } else if (e.key === 'product') {
+      history.push('/product')
     }
-  };
+  }
 
   return (
     <div className={styles.box}>
@@ -53,11 +57,9 @@ const HomePage: React.FC = (props) => {
           mode="horizontal"
           items={items}
         />
-        <div className={styles.guanwang}>企业门户官网</div>
+        <div className={styles.guanwang} onClick={() => { window.location.href = "http://localhost:7002" }}>跳转后台系统</div>
       </div>
-      {current === 'home' && <Home />}
-      {current === 'news' && <News />}
-      {current === 'product' && <Product />}
+      <Outlet />
     </div>
   )
 };

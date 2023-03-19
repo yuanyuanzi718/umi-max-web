@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { request } from '@umijs/max';
-import { Row, Col, AutoComplete, Input, Card, Tabs } from 'antd';
+import { request, history } from '@umijs/max';
+import { Row, Col, AutoComplete, Input, Card, Tabs, Avatar, Image } from 'antd';
 import type { TabsProps } from 'antd'
 import type { SelectProps } from 'antd/es/select';
 import styles from './index.less'
@@ -12,11 +12,8 @@ const News: React.FC = () => {
   const [newsShow, setnewsShow] = useState<any>([]);
   const [options, setOptions] = useState<SelectProps<object>['options']>([]);
 
-
-
   useEffect(() => {
     request('/webapi/news/list', {}).then(res => {
-      console.log(res);
       if (res.success) {
         setnewsList(res.data.list)
         setnewsShow(res.data.list.slice(0, 4))
@@ -48,11 +45,10 @@ const News: React.FC = () => {
   };
 
   const goDetail = (id: string) => {
-    console.log('id', id);
+    history.push(`/news/${id}`)
   }
 
   const onSelect = (value: string) => {
-    console.log('value', value);
     const tem = newsList.filter((item: any) => item.title.includes(value))
     goDetail(tem._id)
   };
@@ -65,17 +61,89 @@ const News: React.FC = () => {
     {
       key: '1',
       label: `最新动态`,
-      children: `Content of Tab Pane 1`,
+      children: <div>
+        {
+          newsList.map((item: any) => {
+            if (item.category === 1) {
+              return <Card
+                key={item._id}
+                onClick={() => { goDetail(item._id) }}
+                hoverable
+                style={{ width: '100%', marginBottom: 15 }}
+              >
+                <Meta
+                  avatar={
+                    <Image
+                      width={200}
+                      src={item?.cover ? item.cover.thumbUrl : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"}
+                    />
+                  }
+                  title={item.title}
+                  description={dayjs(item.editTime).format('YYYY-MM-DD HH:mm:ss')}
+                />
+              </Card>
+            }
+          })
+        }
+      </div>
     },
     {
       key: '2',
       label: `典型案例`,
-      children: `Content of Tab Pane 2`,
+      children: <div>
+        {
+          newsList.map((item: any) => {
+            if (item.category === 2) {
+              return <Card
+                key={item._id}
+                onClick={() => { goDetail(item._id) }}
+                hoverable
+                style={{ width: '100%', marginBottom: 15 }}
+              >
+                <Meta
+                  avatar={
+                    <Image
+                      width={200}
+                      src={item?.cover ? item.cover.thumbUrl : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"}
+                    />
+                  }
+                  title={item.title}
+                  description={dayjs(item.editTime).format('YYYY-MM-DD HH:mm:ss')}
+                />
+              </Card>
+            }
+          })
+        }
+      </div>,
     },
     {
       key: '3',
       label: `通知公告`,
-      children: `Content of Tab Pane 3`,
+      children: <div>
+        {
+          newsList.map((item: any) => {
+            if (item.category === 3) {
+              return <Card
+                key={item._id}
+                onClick={() => { goDetail(item._id) }}
+                hoverable
+                style={{ width: '100%', marginBottom: 15 }}
+              >
+                <Meta
+                  avatar={
+                    <Image
+                      width={200}
+                      src={item?.cover ? item.cover.thumbUrl : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"}
+                    />
+                  }
+                  title={item.title}
+                  description={dayjs(item.editTime).format('YYYY-MM-DD HH:mm:ss')}
+                />
+              </Card>
+            }
+          })
+        }
+      </div>,
     },
   ];
 
@@ -118,6 +186,7 @@ const News: React.FC = () => {
       </Row>
       <Row className={styles.newsTabBox}>
         <Tabs
+          style={{ width: '100%' }}
           defaultActiveKey="1"
           items={items}
           onChange={tabOnChange}

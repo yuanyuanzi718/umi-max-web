@@ -1,9 +1,18 @@
 export default [
   {
     path: '/',
+    redirect: '/home'
+  },
+  {
+    path: '/',
     component: '@/pages/Layout',
-    layout: false,
-    exact: true,
+    routes: [
+      { exact: true, path: '/home', component: '@/pages/Home' },
+      { exact: true, path: '/news', component: '@/pages/News' },
+      { exact: true, path: '/product', component: '@/pages/Product' },
+      { exact: true, path: '/admin' },
+      { exact: true, path: '/news/:id', component: '@/pages/News/newsDetail.tsx' },
+    ],
   },
   { path: '*', component: '@/pages/404.tsx', layout: false, },
 ];
