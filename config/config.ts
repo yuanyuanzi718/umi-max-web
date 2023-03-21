@@ -2,6 +2,7 @@ import { defineConfig } from '@umijs/max';
 import routes from './routes';
 
 export default defineConfig({
+  title: '新闻社',
   antd: {},
   access: {},
   model: {},
